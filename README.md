@@ -1,1 +1,1 @@
-# inventory-application
+# Irina Shop
