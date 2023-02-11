@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require("mongoose");
 
+require('dotenv').config();
+
 const catalogRouter = require('./routes/catalog');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -43,7 +45,8 @@ app.use(function(err, req, res, next) {
 
 
 // set up default mongoose connection
-const mongoDB = "mongodb+srv://damir3irina1:Irina3Maslenok1@cluster0.g2zxoqm.mongodb.net/?retryWrites=true&w=majority";
+
+const mongoDB = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.g2zxoqm.mongodb.net/?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // get the default connection
