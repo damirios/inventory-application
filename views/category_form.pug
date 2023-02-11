@@ -1,0 +1,27 @@
+extends layout 
+
+block content
+    if category
+        h1 Изменение информации о категории:
+    else 
+        h1 Создание категории: 
+
+    form(method='POST' action='')
+            div.form-group
+                label(for='category_title') Название:
+                input#category_title.form-control(type='text', placeholder='Название категории' name='category_title'
+                    required='true' value=(undefined===category ? '' : category.title) )
+            div.form-group
+                label(for='category_description') Описание:
+                textarea#category_description.form-control(type='textarea', placeholder='Описание категории'
+                    name='category_description' required='true') #{undefined===category ? '' : category.description}
+            button.btn.btn-primary(type='submit')
+                if category 
+                    | Изменить
+                else 
+                    | Создать   
+    
+    if errors
+        ul 
+            for error in errors
+                li!=error.msg

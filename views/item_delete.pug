@@ -1,0 +1,36 @@
+extends layout 
+
+block content 
+
+    h1 Удаление товара: "#{item.title}"
+    div 
+        p Описание: #{item.description}
+        p Категория: #{item.category.title}
+        p Цена: #{item.price} руб.
+
+    hr
+
+    if item_instances.length > 0
+
+        h3 Удалите следующие экземпляры товара перед удалением самого товара.
+
+        div(style='margin-left:20px;margin-top:20px')
+
+            h4 Экземпляры товара
+
+            dl
+            each instance in item_instances
+                dt #[a(href=instance.url) Экземпляр товара "#{item.title}"]
+                dd 
+                    p Статус: #{instance.status === "Available" ? "доступен" : "нет в наличии"} 
+                    p Цвет: #{instance.color.title.toLowerCase()}
+                hr
+
+    else 
+        p Вы действительно хотите удалить этот товар?
+
+        form(method='POST' action='')
+            div.form-group
+                input#itemid.form-control(type='hidden', name='itemid', required='true', value=item._id)
+
+            button.btn.btn-primary(type='submit') Удалить

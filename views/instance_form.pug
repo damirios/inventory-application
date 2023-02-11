@@ -1,0 +1,37 @@
+extends layout
+
+block content
+    if instance
+        h1 Изменение данных об экземпляре товара:
+    else 
+        h1 Создание экземпляра товара: 
+
+    form(method='POST' action='')
+        div.form-group
+            label(for='item') Товар:
+            select#item.form-control(type='select', placeholder='Выберите товар' name='item' required='true' )
+                //- - items.sort(function(a, b) {let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
+                for item in items
+                    if instance
+                        option(value=item._id selected=(item.checked)) #{item.title}
+                    else
+                        option(value=item._id) #{item.title}
+        div.form-group
+            label(for='color') Цвет:
+            select#color.form-control(type='select', placeholder='Выберите цвет' name='color' required='true' )
+                //- - items.sort(function(a, b) {let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
+                for color in colors
+                    if instance
+                        option(value=color._id selected=(color.checked)) #{color.title}
+                    else
+                        option(value=color._id) #{color.title}
+        div.form-group
+            label(for='status') Статус:
+            select#status.form-control(type='select', placeholder='Выберите статус' name='status')
+                option(value= true ) Доступен
+                option(value= false ) Нет в наличии
+        button.btn.btn-primary(type='submit')
+            if instance
+                | Изменить
+            else 
+                | Создать    

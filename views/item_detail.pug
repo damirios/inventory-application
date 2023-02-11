@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    h1 #{item.title}
+
+    p #[strong Описание: ] #{item.description}
+        //- a(href=book.author.url) #{book.author.name}
+    p #[strong Цена: ] #{item.price} руб.
+    p #[strong Категория: ] #{item.category.title}
+    p #[strong Доступные цвета: ] #{colors.join(', ')}
+
+    div(style='margin-left:20px;margin-top:20px')
+    h4 Экземпляры
+
+    each instance in item_instances
+        hr
+        if instance.status == 'Available'
+            p.text-success Этот товар есть в наличии
+        else
+            p.text-warning Этого товара нет в наличии сейчас
+        p #[strong Цвет: ] #{instance.color.title}
+        p #[strong Id: ]
+            a(href=instance.url) #{instance._id}
+
+    else
+        p Экземпляров этого товара нет.
+
+    hr
+    p
+        a(href=item.url+'/delete') Удалить товар
+    p
+        a(href=item.url+'/update') Изменить информацию о товаре

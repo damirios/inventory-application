@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    h1= title
+
+    ul
+        each color in colors
+            li
+                div
+                    p #{color.title}
+                    a(href=color.url + "/delete") Удалить цвет
+                    span  | 
+                    a(href=color.url + "/update") Изменить данные о цвете
+                    hr
+
+
+        else
+            li Цветов нет.

@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    h1 Экземпляр товара "#{instance.item.title}"
+
+    p #[strong Описание: ] #{instance.item.description}
+    p #[strong Цена: ] #{instance.item.price} руб.
+    p #[strong Категория: ] #{instance.item.category.title}
+    p #[strong Цвет: ] #{instance.color.title}
+    if instance.status === 'Available'
+        p.text-success Этот товар есть в наличии
+    else 
+        p.text-warning Этого товара нет в наличии сейчас
+
+    hr
+    p
+        a(href=instance.url+'/delete') Удалить экземпляр товара
+    p
+        a(href=instance.url+'/update') Изменить информацию об экземпляре товара

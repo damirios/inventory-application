@@ -1,0 +1,23 @@
+extends layout 
+
+block content
+    if color
+        h1 Изменение информации о цвете:
+    else 
+        h1 Создание цвета: 
+
+    form(method='POST' action='')
+            div.form-group
+                label(for='category_title') Название:
+                input#color_title.form-control(type='text', placeholder='Название цвета' name='color_title'
+                    required='true' value=(undefined===color ? '' : color.title) )
+            button.btn.btn-primary(type='submit')
+                if color
+                    | Изменить
+                else 
+                    | Создать   
+    
+    if errors
+        ul 
+            for error in errors
+                li!=error.msg

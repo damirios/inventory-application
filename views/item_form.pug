@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    if item
+        h1 Изменение данных о товаре:
+    else 
+        h1 Создание товара: 
+
+    form(method='POST' action='')
+        div.form-group
+            label(for='title') Название:
+            input#title.form-control(type='text', placeholder='Название товара' name='title' required='true' value=(undefined===item ? '' : item.title) )
+        div.form-group
+            label(for='category') Категория:
+            select#category.form-control(type='select', placeholder='Выберите категорию' name='category' required='true' )
+                - categories.sort(function(a, b) {let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
+                for category in categories
+                    if item
+                        option(value=category._id selected=(category.checked)) #{category.title}
+                    else
+                        option(value=category._id) #{category.title}
+        div.form-group
+            label(for='description') Описание:
+            textarea#description.form-control(type='textarea', placeholder='Описание товара' name='description' required='true') #{undefined===item ? '' : item.description}
+        div.form-group
+            label(for='price') Цена:
+            input#price.form-control(type='number', name='price' required='true' value=(undefined===item ? '' : item.price))  
+        button.btn.btn-primary(type='submit')
+            if item 
+                | Изменить
+            else 
+                | Создать    

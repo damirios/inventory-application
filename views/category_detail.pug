@@ -1,0 +1,29 @@
+extends layout
+
+block content
+
+    h1 Категория "#{category.title}"
+    p #{category.description}
+
+    div(style='margin-left:20px;margin-top:20px;')
+
+        h4 Товары
+
+        - (index = 0)
+        dl
+            each item in category_items
+                dt
+                    a(href=item.url) #{item.title}
+                    dd #{item.description}
+                    dd Цена: #{item.price} руб.
+                    - (index += 1)
+                    if category_items.length !== index 
+                        hr
+            
+            else
+                p Нет товаров в этой категории.
+    hr
+    p
+        a(href=category.url + '/delete') Удалить категорию
+    p 
+        a(href=category.url + '/update') Изменить информацию о категории

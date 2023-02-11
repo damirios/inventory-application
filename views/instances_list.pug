@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    h1= title
+    ul 
+        each instance in instances 
+            li 
+                div
+                    a(href=instance.url) #{instance.item.title}
+                    p #{instance.item.description}
+                    p Цвет: #{instance.color.title}
+                    p Цена: #{instance.item.price} руб.
+                    if instance.status === 'Available'
+                        p.text-success Этот товар есть в наличии
+                    else 
+                        p.text-warning Этого товара нет в наличии сейчас
+                    hr
+        else 
+            li Нет экземпляров.

@@ -1,0 +1,22 @@
+extends layout 
+
+block content 
+
+    h1 Удаление экземпляра товара: "#{instance.item.title}"
+    div 
+        p Описание: #{instance.item.description}
+        p Цена: #{instance.item.price} руб.
+        p Статус товара:
+        if instance.status === "Available"
+            p.text-success Доступен
+        else 
+            p.text-warning Нет в наличии
+
+    hr
+    p Вы действительно хотите удалить этот экземпляр товара?
+
+    form(method='POST' action='')
+        div.form-group
+            input#instanceid.form-control(type='hidden', name='instanceid', required='true', value=instance._id)
+
+        button.btn.btn-primary(type='submit') Удалить

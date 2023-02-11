@@ -1,0 +1,28 @@
+extends layout 
+
+block content 
+
+    h1 Удаление цвета: "#{color.title}"
+    hr
+
+    if instances.length > 0
+
+        h3 Удалите следующие экземпляры товаров перед удалением цвета.
+
+        div(style='margin-left:20px;margin-top:20px')
+
+            h4 Экземпляры товаров
+
+            dl
+            each instance in instances
+                dt #[a(href=instance.url) Экземпляр товара "#{instance.item.title}"]
+                hr
+
+    else 
+        p Вы действительно хотите удалить этот цвет?
+
+        form(method='POST' action='')
+            div.form-group
+                input#colorid.form-control(type='hidden', name='colorid', required='true', value=color._id)
+
+            button.btn.btn-primary(type='submit') Удалить

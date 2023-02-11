@@ -1,0 +1,11 @@
+extends layout
+
+block content
+	h1 Начальная страница Irina Shop
+	h2 Все предметы:
+	div
+		p Всего видов товаров: #{data.item_count}
+		p Всего экземпляров товаров: #{data.item_instance_count}
+		p Доступных экземпляров товаров: #{data.item_instance_available_count}
+		p Всего категорий товаров: #{data.category_count}
+		p Всего цветов товаров: #{data.color_count}

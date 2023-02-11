@@ -1,0 +1,34 @@
+extends layout 
+
+block content 
+
+    h1 Удаление категории: "#{category.title}"
+    div 
+        p Описание: #{category.description}
+
+    hr
+
+    if items.length > 0
+
+        h3 Удалите следующие товары перед удалением категории.
+
+        div(style='margin-left:20px;margin-top:20px')
+
+            h4 Товары
+
+            dl
+            each item in items
+                dt #[a(href=item.url) Товар "#{item.title}"]
+                dd 
+                    p Описание: #{item.description} 
+                    p Цена: #{item.price} руб.
+                hr
+
+    else 
+        p Вы действительно хотите удалить эту категорию?
+
+        form(method='POST' action='')
+            div.form-group
+                input#categoryid.form-control(type='hidden', name='categoryid', required='true', value=category._id)
+
+            button.btn.btn-primary(type='submit') Удалить
