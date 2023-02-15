@@ -9,6 +9,10 @@ block content
     p #[strong Категория: ] #{item.category.title}
     p #[strong Доступные цвета: ] #{colors.join(', ')}
 
+    if item.image
+        div.product__image-box
+            img(src=`/uploads/images/${item.image}` style='max-width:200px; max-height:200px' alt=item.title.toLowerCase())
+
     div(style='margin-left:20px;margin-top:20px')
     h4 Экземпляры
 

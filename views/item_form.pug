@@ -5,8 +5,7 @@ block content
         h1 Изменение данных о товаре:
     else 
         h1 Создание товара: 
-
-    form(method='POST' action='')
+    form.form-pass(method='POST' action='' enctype="multipart/form-data" data-pass='false')
         div.form-group
             label(for='title') Название:
             input#title.form-control(type='text', placeholder='Название товара' name='title' required='true' value=(undefined===item ? '' : item.title) )
@@ -24,9 +23,29 @@ block content
             textarea#description.form-control(type='textarea', placeholder='Описание товара' name='description' required='true') #{undefined===item ? '' : item.description}
         div.form-group
             label(for='price') Цена:
-            input#price.form-control(type='number', name='price' required='true' value=(undefined===item ? '' : item.price))  
+            input#price.form-control(type='number', name='price' required='true' value=(undefined===item ? '' : item.price))
+        
+        if item && item.image 
+            div.item-form__checkbox-box
+                input(class="item-form__checkbox" type="checkbox" name="delete_image")
+                span удалить изображение
+
+        div.item-form__switch
+            if item 
+                p Изменить изображение товара?
+            else 
+                p Добавить изображение товара?
+            label.switch 
+                input(type="checkbox")
+                span.slider.round
+        div(class=`form-group form-image hide`)
+            label(for="image")
+            input#image.form-control(type="file" name="image")
         button.btn.btn-primary(type='submit')
             if item 
                 | Изменить
             else 
-                | Создать    
+                | Создать
+    script
+        include ../public/javascripts/switch.js
+        include ../public/javascripts/passcheck.js

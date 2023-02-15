@@ -8,6 +8,10 @@ block content
         p Категория: #{item.category.title}
         p Цена: #{item.price} руб.
 
+    if item.image
+        div.product__image-box
+            img(src=`/uploads/images/${item.image}` style='max-width:200px; max-height:200px' alt=item.title.toLowerCase())
+
     hr
 
     if item_instances.length > 0

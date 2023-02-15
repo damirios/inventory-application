@@ -6,6 +6,11 @@ const Color = require("../models/color");
 const { body, validationResult } = require('express-validator');
 const async = require("async");
 
+const multer = require("multer");
+const upload = multer({dest: "public/uploads/images"});
+
+const fs = require("fs");
+
 
 // Site Home Page 
 exports.index = (req, res) => {
@@ -120,14 +125,26 @@ exports.item_create_post = [
         .isLength({min: 1})
         .escape()
         .isNumeric(),
+    upload.single("image"),
     (req, res, next) => {
         const errors = validationResult(body);
+        
+        const image = req.file;
+        let imageName = null;
+        let imageExt = '';
+        let oldPath = '';
+        if (image) {
+            imageExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
+            imageName = `${req.file.filename}.${imageExt}`;
+            oldPath = req.file.destination + `/${req.file.filename}`;
+        }
 
         const item = new Item({
             title: req.body.title,
             description: req.body.description,
             category: req.body.category,
             price: req.body.price,
+            image: imageName
         });
 
         if (!errors.isEmpty()) {
@@ -151,14 +168,26 @@ exports.item_create_post = [
             return;
         }
 
-        // нет ошибок, тогда сохраняем новый товар
-        item.save((err) => {
-            if (err) {
-                return next(err);
-            }
-
-            res.redirect(item.url);
-        });
+        if (image) {
+            fs.rename(oldPath, `${oldPath}.${imageExt}`, () => {
+                // нет ошибок, тогда сохраняем новый товар
+                item.save((err) => {
+                    if (err) {
+                        return next(err);
+                    }
+        
+                    res.redirect(item.url);
+                });
+            });
+        } else {
+            item.save((err) => {
+                if (err) {
+                    return next(err);
+                }
+    
+                res.redirect(item.url);
+            });
+        }
     }
 ];
 
@@ -229,6 +258,17 @@ exports.item_delete_post = (req, res, next) => {
             if (err) {
                 return next(err);
             }
+
+            // удаляю изображение, если оно есть
+            if (results.item.image) {
+                const imageName = `public/uploads/images/${results.item.image}`;
+                fs.unlink(imageName, (err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                });
+            }
+
             res.redirect("/catalog/items");
         });
     });
@@ -290,16 +330,16 @@ exports.item_update_post = [
         .isLength({min: 1})
         .escape()
         .isNumeric(),
+    upload.single("image"),
     (req, res, next) => {
         const errors = validationResult(body);
-
-        const item = new Item({
+        const itemData = {
             title: req.body.title,
             description: req.body.description,
             category: req.body.category,
             price: req.body.price,
             _id: req.params.id //This is required, or a new ID will be assigned!
-        });
+        }
 
         if (!errors.isEmpty()) {
             async.parallel({
@@ -315,18 +355,64 @@ exports.item_update_post = [
                 res.render("item_form", {
                     title: "Изменение данных о товаре",
                     categories: results.categories,
-                    item,
+                    item: itemData,
                     errors: errors.array()
                 });
             });
             return;
         }
-
-        Item.findByIdAndUpdate(req.params.id, item, {}, (err, theitem) => {
+        
+        Item.findById(req.params.id, "image").exec((err, item) => {
             if (err) {
                 return next(err);
             }
-            res.redirect(theitem.url);
+            
+            const newImage = req.file;
+            let imageExt = '';
+            let oldPath = '';
+
+            // если новая картинка была выбрана, нужно удалить старую (если она есть!) и добавить расширение к новой. 
+            if (newImage) {
+                imageExt = newImage.originalname.split('.')[req.file.originalname.split('.').length - 1];
+                oldPath = newImage.destination + `/${newImage.filename}`;
+                itemData.image = `${newImage.filename}.${imageExt}`;
+
+                // добавляем расширение картинке
+                fs.rename(oldPath, `${oldPath}.${imageExt}`, (err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                });
+
+                if (item.image) { // если есть старая картинка, удаляем её
+                    const oldImageName = `${newImage.destination}/${item.image}`;
+                    fs.unlink(oldImageName, (err) => {
+                        if (err) {
+                            return next(err);
+                        }
+                    });
+                } 
+            }
+
+            // удаление картинки из сервера
+            if (req.body.delete_image) {
+                itemData.image = null; // Удаляем ссылку на файл из БД
+                const imageName = `public/uploads/images/${item.image}`;
+                fs.unlink(imageName, (err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                });
+            }
+
+            // сохраняем изменённый товар
+            Item.findByIdAndUpdate(req.params.id, itemData, {}, (err, theitem) => {
+                if (err) {
+                    return next(err);
+                }
+
+                res.redirect(theitem.url);
+            });
         });
     }
 ];
